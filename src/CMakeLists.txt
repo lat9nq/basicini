@@ -2,3 +2,4 @@
 include_directories(.)
 
 add_subdirectory(basicini)
+add_subdirectory(test)

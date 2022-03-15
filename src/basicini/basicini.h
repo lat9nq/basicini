@@ -2,8 +2,16 @@
 
 #include <filesystem>
 
-class BasicIni {
+class BasicIniReader {
 public:
-    explicit BasicIni(std::filesystem::path ini_path);
-    ~BasicIni();
+    explicit BasicIniReader(std::filesystem::path ini_loc_);
+    ~BasicIniReader();
+
+    bool IsValid();
+
+private:
+    void ReadFile();
+
+    std::filesystem::path ini_loc; ///< location of the file
+    bool valid{false};             ///< whether the INI is valid
 };
