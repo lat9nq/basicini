@@ -1,17 +1,21 @@
 #pragma once
 
 #include <filesystem>
+#include <memory>
+
+#include "basicini/basicini.h"
 
 class BasicIniReader {
 public:
-    explicit BasicIniReader(std::filesystem::path ini_loc_);
+    explicit BasicIniReader(BasicIni& data_);
     ~BasicIniReader();
 
-    bool IsValid();
+    bool IsValid() const;
 
 private:
     void ReadFile();
 
-    std::filesystem::path ini_loc; ///< location of the file
-    bool valid{false};             ///< whether the INI is valid
+    bool valid{false}; ///< whether the INI is valid
+
+    BasicIni& data;
 };

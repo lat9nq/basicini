@@ -1,11 +1,15 @@
-#include <cstdio>
 #include <filesystem>
 #include <string>
 
 #include "basicini/basicini.h"
+#include "basicini/basicini_reader.h"
 
-BasicIniReader::BasicIniReader(std::filesystem::path ini_loc_) : ini_loc{ini_loc_} {
-    std::printf("%s\n", ini_loc.string().c_str());
-}
+BasicIniReader::BasicIniReader(BasicIni& data_) : data{data_} {}
 
 BasicIniReader::~BasicIniReader() = default;
+
+bool BasicIniReader::IsValid() const {
+    return valid;
+}
+
+void BasicIniReader::ReadFile() {}
