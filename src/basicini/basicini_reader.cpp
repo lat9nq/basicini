@@ -1,11 +1,8 @@
 #include <array>
 #include <cctype>
 #include <filesystem>
+#include <fstream>
 #include <string>
-
-#include <fcntl.h>
-#include <unistd.h>
-
 #include "basicini/basicini.h"
 #include "basicini/basicini_reader.h"
 
@@ -20,46 +17,18 @@ bool BasicIniReader::IsValid() const {
 }
 
 void BasicIniReader::ReadFile() {
-    const int fd = open(data.GetPath().string().c_str(), 0, O_RDONLY);
-    if (fd == -1) {
+    std::fstream ini_file{data.GetPath()};
+    if (!ini_file.is_open()) {
         return;
     }
 
     data.Clear();
 
-    std::string file_data{};
-    std::size_t read_len;
-    char buffer[255];
-    while (read_len = read(fd, &buffer, 255)) {
-        if (read_len < 255) {
-            buffer[read_len] = '\0';
-        }
-        file_data.append(buffer);
-    }
-
-    close(fd);
-
     std::string line{};
-    int line_number = 0;
-    for (std::size_t i = 0; i < file_data.size(); i++) {
-        if (file_data[i] == '\0') {
-            break;
-        }
-        switch (file_data[i]) {
-        case '\n':
-        case '\r':
-            line_number++;
-            LexLine(line);
-            line.clear();
-            break;
-        default:
-            line.push_back(file_data[i]);
-            break;
-        }
-        if (!valid) {
-            break;
-        }
+    while (std::getline(ini_file, line)) {
+        LexLine(line);
     }
+    ini_file.close();
 }
 
 void BasicIniReader::LexLine(const std::string& line) {
@@ -69,6 +38,12 @@ void BasicIniReader::LexLine(const std::string& line) {
 
     // Don't do anything if the current line is a comment
     if (comment_chars.find(line[0]) != std::string::npos) {
+        return;
+    }
+
+    // Current line is invalid
+    if (!isgraph(line[0])) {
+        valid = false;
         return;
     }
 
@@ -89,6 +64,7 @@ void BasicIniReader::LexLine(const std::string& line) {
         return;
     }
 
+    // Check line has assignment character and starts at the beginning of the line
     const std::string::size_type assignment = line.find('=');
     if (assignment == std::string::npos) {
         valid = false;
@@ -100,13 +76,13 @@ void BasicIniReader::LexLine(const std::string& line) {
     std::string variable_name{};
     std::string variable_value{};
 
-    for (std::size_t i = 0; i < line.find('='); i++) {
-        if (!isgraph(line[i])) {
+    for (std::size_t i = 0; i < assignment; i++) {
+        if (!std::isgraph(line[i])) {
             break;
         }
         variable_name.push_back(line[i]);
     }
-    for (std::size_t i = line.find('=') + 1; i < line.size(); i++) {
+    for (std::size_t i = assignment + 1; i < line.size(); i++) {
         variable_value.push_back(line[i]);
     }
 
