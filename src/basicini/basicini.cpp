@@ -58,7 +58,7 @@ void BasicIni::Get(const std::string& section_name, const std::string& key, bool
         return;
     }
     std::transform(value.begin(), value.end(), value.begin(),
-                   [](char c) -> char { return std::tolower(c); });
+                   [](char c) -> char { return static_cast<char>(std::tolower(c)); });
     dest = value.compare("1") == 0 || value.compare("yes") == 0 || value.compare("true") == 0;
 };
 template <>
