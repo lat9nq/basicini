@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <string>
 
@@ -15,7 +16,7 @@ void BasicIni::AddSection(const std::string& section_name) {
 void BasicIni::Set(const std::string& section_name, const std::string& key,
                    const std::string& value) {
     std::map<std::string, std::string>& section = sections[section_name];
-    section.insert({key, value});
+    section.insert_or_assign(key, value);
 }
 
 const std::filesystem::path& BasicIni::GetPath() const {
@@ -58,7 +59,7 @@ void BasicIni::Get(const std::string& section_name, const std::string& key, bool
     }
     std::transform(value.begin(), value.end(), value.begin(),
                    [](char c) -> char { return std::tolower(c); });
-    dest = value.compare("1") || value.compare("yes") || value.compare("true");
+    dest = value.compare("1") == 0 || value.compare("yes") == 0 || value.compare("true") == 0;
 };
 template <>
 void BasicIni::Get(const std::string& section_name, const std::string& key,
@@ -68,4 +69,21 @@ void BasicIni::Get(const std::string& section_name, const std::string& key,
 
 void BasicIni::Clear() {
     sections.clear();
+}
+
+void BasicIni::WriteFile(const BasicIni& data) {
+    std::fstream ini_file{data.ini_loc, std::ios::out | std::ios::trunc};
+    if (!ini_file.is_open()) {
+        return;
+    }
+
+    for (auto section = data.sections.begin(); section != data.sections.end(); ++section) {
+        ini_file << '[' << section->first << "]\n";
+        for (auto item = section->second.begin(); item != section->second.end(); ++item) {
+            ini_file << item->first << " =" << (item->second.empty() ? "" : " ") << item->second
+                     << '\n';
+        }
+        ini_file << '\n';
+    }
+    ini_file.close();
 }

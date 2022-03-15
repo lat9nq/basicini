@@ -14,6 +14,14 @@ int main() {
         ini.Get("Renderer", "resolution_setup", value);
         return value;
     }());
+    ini.Set("Renderer", "debug",
+            [&]() {
+                bool value;
+                ini.Get("Renderer", "debug", value);
+                return !value;
+            }()
+                ? "true"
+                : "false");
     std::printf("Renderer.debug = %s\n",
                 [&]() {
                     bool value;
@@ -47,5 +55,6 @@ int main() {
         ini.Get("Not", "valid", value);
         return value;
     }());
+    BasicIni::WriteFile(ini);
     return 0;
 }
