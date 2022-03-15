@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <string>
 
 #include "basicini/basicini.h"
 
@@ -11,11 +12,13 @@ public:
     ~BasicIniReader();
 
     bool IsValid() const;
-
-private:
     void ReadFile();
 
-    bool valid{false}; ///< whether the INI is valid
+private:
+    void ParseLine(const std::string& line);
+
+    bool valid{true}; ///< whether the INI is valid
 
     BasicIni& data;
+    std::string current_section;
 };
