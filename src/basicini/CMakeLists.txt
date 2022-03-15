@@ -1,5 +1,5 @@
 
 add_library(basicini
-    basicini.cpp
-    basicini.h
+    basicini_reader.cpp
+    basicini_reader.h
 )
