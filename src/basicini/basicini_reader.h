@@ -15,7 +15,7 @@ public:
     void ReadFile();
 
 private:
-    void ParseLine(const std::string& line);
+    void LexLine(const std::string& line);
 
     bool valid{true}; ///< whether the INI is valid
 

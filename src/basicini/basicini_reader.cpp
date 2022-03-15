@@ -49,7 +49,7 @@ void BasicIniReader::ReadFile() {
         case '\n':
         case '\r':
             line_number++;
-            ParseLine(line);
+            LexLine(line);
             line.clear();
             break;
         default:
@@ -62,7 +62,7 @@ void BasicIniReader::ReadFile() {
     }
 }
 
-void BasicIniReader::ParseLine(const std::string& line) {
+void BasicIniReader::LexLine(const std::string& line) {
     if (line.empty()) {
         return;
     }
