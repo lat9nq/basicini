@@ -37,41 +37,40 @@ const std::optional<std::string> BasicIni::GetValue(const std::string& section_n
 }
 
 template <>
-void BasicIni::Get(const std::string& section_name, const std::string& key, int& dest,
-                   const int& default_value) const {
+int BasicIni::Get(const std::string& section_name, const std::string& key,
+                  const int& default_value) const {
     const std::string& value = GetValue(section_name, key).value_or("");
     try {
-        dest = std::stoi(value);
+        return std::stoi(value);
     } catch (const std::invalid_argument&) {
-        dest = default_value;
+        return default_value;
     }
 };
 template <>
-void BasicIni::Get(const std::string& section_name, const std::string& key, float& dest,
-                   const float& default_value) const {
+float BasicIni::Get(const std::string& section_name, const std::string& key,
+                    const float& default_value) const {
     const std::string& value = GetValue(section_name, key).value_or("");
     try {
-        dest = std::stof(value);
+        return std::stof(value);
     } catch (const std::invalid_argument&) {
-        dest = default_value;
+        return default_value;
     }
 };
 template <>
-void BasicIni::Get(const std::string& section_name, const std::string& key, bool& dest,
+bool BasicIni::Get(const std::string& section_name, const std::string& key,
                    const bool& default_value) const {
     std::string value = GetValue(section_name, key).value_or("");
     if (value.empty()) {
-        dest = default_value;
-        return;
+        return default_value;
     }
     std::transform(value.begin(), value.end(), value.begin(),
                    [](char c) -> char { return static_cast<char>(std::tolower(c)); });
-    dest = value.compare("1") == 0 || value.compare("yes") == 0 || value.compare("true") == 0;
+    return value.compare("1") == 0 || value.compare("yes") == 0 || value.compare("true") == 0;
 };
 template <>
-void BasicIni::Get(const std::string& section_name, const std::string& key, std::string& dest,
-                   const std::string& default_value) const {
-    dest = GetValue(section_name, key).value_or(default_value);
+std::string BasicIni::Get(const std::string& section_name, const std::string& key,
+                          const std::string& default_value) const {
+    return GetValue(section_name, key).value_or(default_value);
 }
 
 void BasicIni::Clear() {

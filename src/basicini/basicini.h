@@ -19,8 +19,7 @@ public:
     const std::optional<std::string> GetValue(const std::string& section_name,
                                               const std::string& key) const;
     template <typename T>
-    void Get(const std::string& section_name, const std::string& key, T& dest,
-             const T& default_value) const;
+    T Get(const std::string& section_name, const std::string& key, const T& default_value) const;
 
     const std::filesystem::path& GetPath() const;
 
