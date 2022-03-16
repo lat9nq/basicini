@@ -19,6 +19,10 @@ void BasicIni::Set(const std::string& section_name, const std::string& key,
     section.insert_or_assign(key, value);
 }
 
+void BasicIni::SetPath(const std::filesystem::path& new_path) {
+    ini_loc = new_path;
+}
+
 const std::filesystem::path& BasicIni::GetPath() const {
     return ini_loc;
 }
