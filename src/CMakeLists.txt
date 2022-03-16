@@ -32,4 +32,6 @@ add_compile_options(
 )
 
 add_subdirectory(basicini)
-add_subdirectory(test)
+if (ENABLE_TEST)
+    add_subdirectory(test)
+endif()
