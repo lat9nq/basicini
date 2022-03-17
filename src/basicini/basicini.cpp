@@ -70,7 +70,11 @@ bool BasicIni::Get(const std::string& section_name, const std::string& key,
 template <>
 std::string BasicIni::Get(const std::string& section_name, const std::string& key,
                           const std::string& default_value) const {
-    return GetValue(section_name, key).value_or(default_value);
+    std::string value = GetValue(section_name, key).value_or(default_value);
+    if (value.empty()) {
+        return default_value;
+    }
+    return value;
 }
 
 void BasicIni::Clear() {
