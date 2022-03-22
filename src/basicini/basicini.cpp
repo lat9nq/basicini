@@ -37,6 +37,26 @@ const std::optional<std::string> BasicIni::GetValue(const std::string& section_n
 }
 
 template <>
+long BasicIni::Get(const std::string& section_name, const std::string& key,
+                   const long& default_value) const {
+    const std::string& value = GetValue(section_name, key).value_or("");
+    try {
+        return std::stol(value);
+    } catch (const std::invalid_argument&) {
+        return default_value;
+    }
+};
+template <>
+unsigned long BasicIni::Get(const std::string& section_name, const std::string& key,
+                            const unsigned long& default_value) const {
+    const std::string& value = GetValue(section_name, key).value_or("");
+    try {
+        return std::stoul(value);
+    } catch (const std::invalid_argument&) {
+        return default_value;
+    }
+};
+template <>
 int BasicIni::Get(const std::string& section_name, const std::string& key,
                   const int& default_value) const {
     const std::string& value = GetValue(section_name, key).value_or("");
